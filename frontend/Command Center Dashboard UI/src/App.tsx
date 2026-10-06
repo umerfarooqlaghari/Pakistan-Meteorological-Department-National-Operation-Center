@@ -1,4 +1,5 @@
 import { lazy, Suspense, useState, type ReactNode } from "react";
+import LoginScreen from "./LoginScreen";
 
 const WeatherForecast = lazy(() => import("./WeatherForecast"));
 const RadarSatellite = lazy(() => import("./RadarSatellite"));
@@ -29,7 +30,8 @@ type IconName =
   | "wind"
   | "rain"
   | "thermometer"
-  | "pin";
+  | "pin"
+  | "logout";
 
 const icons: Record<IconName, ReactNode> = {
   grid: <><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></>,
@@ -53,6 +55,7 @@ const icons: Record<IconName, ReactNode> = {
   rain: <><path d="M6 15h11.5a3.5 3.5 0 0 0 .4-7A6 6 0 0 0 6.6 6.2 4.4 4.4 0 0 0 6 15Z" /><path d="m8 18-1 3m6-3-1 3m6-3-1 3" /></>,
   thermometer: <><path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0Z" /><path d="M12 9v8" /></>,
   pin: <><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2" /></>,
+  logout: <><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></>,
 };
 
 function Icon({ name, size = 16 }: { name: IconName; size?: number }) {
@@ -164,10 +167,33 @@ function Sparkline() {
 }
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return sessionStorage.getItem("pmdnoc_auth") === "true";
+  });
+  const [userEmail, setUserEmail] = useState<string>(() => {
+    return sessionStorage.getItem("pmdnoc_user") || "admin@pmd.com";
+  });
   const [isLive, setIsLive] = useState(true);
   const [emergency, setEmergency] = useState(false);
   const [mapTime, setMapTime] = useState("LIVE");
-  const [activeNav, setActiveNav] = useState(7);
+  const [activeNav, setActiveNav] = useState(0);
+
+  const handleLogin = (email: string) => {
+    sessionStorage.setItem("pmdnoc_auth", "true");
+    sessionStorage.setItem("pmdnoc_user", email);
+    setUserEmail(email);
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("pmdnoc_auth");
+    sessionStorage.removeItem("pmdnoc_user");
+    setIsAuthenticated(false);
+  };
+
+  if (!isAuthenticated) {
+    return <LoginScreen onLogin={handleLogin} />;
+  }
 
   return (
     <div className="app-shell">
@@ -186,6 +212,24 @@ export default function App() {
             </button>
           ))}
         </nav>
+        <div className="sidebar-user">
+          <div className="sidebar-user-info">
+            <span className="sidebar-user-avatar">AD</span>
+            <div className="sidebar-user-details">
+              <strong>{userEmail}</strong>
+              <small>Command Clearance · L4</small>
+            </div>
+          </div>
+          <button
+            className="sidebar-logout-btn"
+            onClick={handleLogout}
+            title="Sign out of PMDNOC"
+            aria-label="Logout"
+          >
+            <Icon name="logout" size={12} />
+            <span>SIGN OUT</span>
+          </button>
+        </div>
         <div className="sidebar-footer">
           <div className="system-ring"><span>98%</span></div>
           <div><strong>System integrity</strong><small><i /> All services nominal</small></div>
@@ -212,7 +256,16 @@ export default function App() {
             <button className={`emergency ${emergency ? "on" : ""}`} onClick={() => setEmergency(!emergency)}><Icon name="shield" size={16} /><span>EMERGENCY</span></button>
             <button className="icon-button notification" aria-label="Notifications"><Icon name="bell" size={18} /><i>3</i></button>
             <button className="icon-button" aria-label="Settings"><Icon name="settings" size={18} /></button>
-            <button className="profile"><span>AK</span><div><strong>Ali Khan</strong><small>Senior Operator</small></div><Icon name="chevron" size={13} /></button>
+            <button className="profile" title={`Signed in as ${userEmail}`}><span>AD</span><div><strong>Admin Operator</strong><small>{userEmail}</small></div><Icon name="chevron" size={13} /></button>
+            <button
+              className="top-logout-btn"
+              onClick={handleLogout}
+              title="Sign out of Operations Console"
+              aria-label="Log Out"
+            >
+              <Icon name="logout" size={13} />
+              <span>LOGOUT</span>
+            </button>
           </div>
         </header>
 
