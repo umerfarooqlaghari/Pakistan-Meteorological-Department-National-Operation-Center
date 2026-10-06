@@ -23,7 +23,7 @@ nav { padding: 0 9px; display: flex; flex-direction: column; gap: 3px; }
 .nav-item:hover { background: #fff; color: #000; }.nav-item.active { background: #fff; color: #000; box-shadow: none; }
 .nav-icon { width: 25px; height: 25px; display: grid; place-items: center; }.nav-item strong { display: block; color: #000; font-size: 10px; font-weight: 600; }.nav-item.active strong { color: #000; }
 .nav-item small { color: #000; font-size: 8px; margin-top: 2px; display: block; }.live-dot { width: 5px; height: 5px; border-radius: 50%; background: #fff; margin-left: auto; box-shadow: none; }
-.sidebar-footer { margin-top: auto; border-top: 1px solid #e5e5e5; padding: 15px 17px; display: flex; align-items: center; gap: 10px; }
+.sidebar-footer { border-top: 1px solid #e5e5e5; padding: 12px 17px; display: flex; align-items: center; gap: 10px; }
 .system-ring { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: #fff; position: relative; }.system-ring::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: #fff; }.system-ring span { z-index: 1; font: 600 8px "Roboto Mono"; color: #000; }
 .sidebar-footer strong { display: block; font-size: 9px; color: #000; }.sidebar-footer small { display: flex; align-items: center; gap: 4px; color: #000; font-size: 7px; margin-top: 3px; }.sidebar-footer small i { width: 4px; height: 4px; background: #fff; border-radius: 50%; }
 .workspace { min-width: 0; flex: 1; display: flex; flex-direction: column; }
