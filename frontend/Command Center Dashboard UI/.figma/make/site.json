@@ -1,0 +1,10 @@
+{
+  "description": "Centralized dashboard delivering real-time meteorological and geophysical data for national disaster management and emergency response decision-making.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
